@@ -1,115 +1,70 @@
-import Image from "next/image";
+"use client";
+import { useEffect, useState } from "react";
+import Card from "./card";
+
+interface Game {
+  id: number;
+  name: string;
+  imagePath: string;
+  imageTitlePath: string;
+}
+
 const ListCard: React.FC = () => {
+  const [data, setData] = useState<Game[] | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await fetch("http://localhost:8080/api/game");
+        if (!res.ok) {
+          const errorMessage = await res.text();
+          throw new Error(`Failed to fetch data: ${errorMessage}`);
+        }
+        const result = await res.json();
+        setData(result.data);
+      } catch (err) {
+        if (err instanceof Error) {
+          setError(err.message);
+        } else {
+          setError("An unknown error occurred");
+        }
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="w-full flex flex-wrap py-6 min-h-52 items-center justify-center">
+        <span className="eos-icons--three-dots-loading"></span>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="w-full flex flex-wrap py-6 min-h-52 items-center justify-center">
+        <p className="text-center">Error : {error}</p>
+      </div>
+    );
+  }
+
   return (
     <div className="w-full flex flex-wrap py-6">
-      <div className="relative h-72 my-4 lg:w-1/6 md:w-1/3 w-1/2 px-4 cursor-pointer group hover:scale-105 duration-300 ease-in-out transition-transform ">
-        <div className="relative w-full h-full rounded-lg">
-          <div className="absolute w-full h-full rounded-lg top-0 border-2 opacity-0 border-sky-600 scale-90 group-hover:opacity-100 group-hover:scale-[1.04] duration-300 ease-in-out transition-all"></div>
-          <div className="relative w-full h-full rounded-lg overflow-hidden">
-            <Image
-              src="/item2.jpeg"
-              layout="fill"
-              objectFit="cover"
-              alt="Fufa Store Logo"
-            />
-          </div>
-          <div className="absolute w-full h-full rounded-lg bg-gradient-to-t from-slate-800 to-transparent top-0 z-30 opacity-0 group-hover:opacity-100 overflow-hidden transition-opacity duration-300 ease-in-out">
-            <p className="absolute bottom-5 left-2 font-extrabold translate-y-10 group-hover:translate-y-0 delay-75 duration-300 ease-in-out transition-transform">
-              Genshin Impact
-            </p>
-          </div>
-        </div>
-        <div className="relative max-w-32 z-10 bottom-20 left-1/2 -translate-x-1/2 ">
-          <Image
-            src="/title-item2.png"
-            alt="cek"
-            width={140}
-            height={14}
-            layout="responsive"
-          />
-        </div>
-      </div>
-      <div className="relative h-72 my-4 lg:w-1/6 md:w-1/3 w-1/2 px-4 cursor-pointer group hover:scale-105 duration-300 ease-in-out transition-transform ">
-        <div className="relative w-full h-full rounded-lg">
-          <div className="absolute w-full h-full rounded-lg top-0 border-2 opacity-0 border-sky-600 scale-90 group-hover:opacity-100 group-hover:scale-[1.04] duration-300 ease-in-out transition-all"></div>
-          <div className="relative w-full h-full rounded-lg overflow-hidden">
-            <Image
-              src="/item.jpeg"
-              layout="fill"
-              objectFit="cover"
-              alt="Fufa Store Logo"
-            />
-          </div>
-          <div className="absolute w-full h-full rounded-lg bg-gradient-to-t from-slate-800 to-transparent top-0 z-30 opacity-0 group-hover:opacity-100 overflow-hidden transition-opacity duration-300 ease-in-out">
-            <p className="absolute bottom-5 left-2 font-extrabold translate-y-10 group-hover:translate-y-0 delay-75 duration-300 ease-in-out transition-transform">
-              Honkai Star Rail
-            </p>
-          </div>
-        </div>
-        <div className="relative max-w-32 z-10 bottom-20 left-1/2 -translate-x-1/2 ">
-          <Image
-            src="/title-item.png"
-            alt="cek"
-            width={140}
-            height={14}
-            layout="responsive"
-          />
-        </div>
-      </div>
-      <div className="relative h-72 my-4 lg:w-1/6 md:w-1/3 w-1/2 px-4 cursor-pointer group hover:scale-105 duration-300 ease-in-out transition-transform ">
-        <div className="relative w-full h-full rounded-lg">
-          <div className="absolute w-full h-full rounded-lg top-0 border-2 opacity-0 border-sky-600 scale-90 group-hover:opacity-100 group-hover:scale-[1.04] duration-300 ease-in-out transition-all"></div>
-          <div className="relative w-full h-full rounded-lg overflow-hidden">
-            <Image
-              src="/item2.jpeg"
-              layout="fill"
-              objectFit="cover"
-              alt="Fufa Store Logo"
-            />
-          </div>
-          <div className="absolute w-full h-full rounded-lg bg-gradient-to-t from-slate-800 to-transparent top-0 z-30 opacity-0 group-hover:opacity-100 overflow-hidden transition-opacity duration-300 ease-in-out">
-            <p className="absolute bottom-5 left-2 font-extrabold translate-y-10 group-hover:translate-y-0 delay-75 duration-300 ease-in-out transition-transform">
-              Genshin Impact
-            </p>
-          </div>
-        </div>
-        <div className="relative max-w-32 z-10 bottom-20 left-1/2 -translate-x-1/2 ">
-          <Image
-            src="/title-item2.png"
-            alt="cek"
-            width={140}
-            height={14}
-            layout="responsive"
-          />
-        </div>
-      </div>
-      <div className="relative h-72 my-4 lg:w-1/6 md:w-1/3 w-1/2 px-4 cursor-pointer group hover:scale-105 duration-300 ease-in-out transition-transform ">
-        <div className="relative w-full h-full rounded-lg">
-          <div className="absolute w-full h-full rounded-lg top-0 border-2 opacity-0 border-sky-600 scale-90 group-hover:opacity-100 group-hover:scale-[1.04] duration-300 ease-in-out transition-all"></div>
-          <div className="relative w-full h-full rounded-lg overflow-hidden">
-            <Image
-              src="/item.jpeg"
-              layout="fill"
-              objectFit="cover"
-              alt="Fufa Store Logo"
-            />
-          </div>
-          <div className="absolute w-full h-full rounded-lg bg-gradient-to-t from-slate-800 to-transparent top-0 z-30 opacity-0 group-hover:opacity-100 overflow-hidden transition-opacity duration-300 ease-in-out">
-            <p className="absolute bottom-5 left-2 font-extrabold translate-y-10 group-hover:translate-y-0 delay-75 duration-300 ease-in-out transition-transform">
-              Honkai Star Rail
-            </p>
-          </div>
-        </div>
-        <div className="relative max-w-32 z-10 bottom-20 left-1/2 -translate-x-1/2 ">
-          <Image
-            src="/title-item.png"
-            alt="cek"
-            width={140}
-            height={14}
-            layout="responsive"
-          />
-        </div>
-      </div>
+      {data?.map((game) => (
+        <Card
+          key={game.id}
+          id={game.id}
+          name={game.name}
+          image={game.imagePath}
+          imageTitle={game.imageTitlePath}
+        />
+      ))}
     </div>
   );
 };

@@ -1,7 +1,41 @@
+"use client";
+
 import Link from "next/link";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 export default function LoginPage() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const router = useRouter();
+
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const body = { email: email, password: password };
+    const response = await fetch("http://localhost:8080/api/auth/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(body),
+    });
+
+    if (response.ok) {
+      const token = response.headers.get("Authorization")?.split(" ")[1]; // Mengambil token dari header
+      if (token) {
+        localStorage.setItem("token", token); // Menyimpan token di localStorage
+        router.push("/"); // Redirect ke halaman utama setelah login
+      } else {
+        console.error("Token not found in response headers");
+        alert("Login failed. Token not found.");
+      }
+    } else {
+      console.error("Login failed");
+      alert("Login failed. Please check your credentials.");
+    }
+  };
+
   return (
     <div className="w-full h-screen flex flex-col items-center justify-center">
       <div className="mb-4">
@@ -13,13 +47,15 @@ export default function LoginPage() {
             Masuk ke Akun anda
           </p>
           <div className="mb-3">
-            <label htmlFor="username" className="text-sm text-gray-300">
-              Username
+            <label htmlFor="email" className="text-sm text-gray-300">
+              Email
             </label>
             <input
               className="w-full rounded-md mt-2 h-8 bg-gray-600 px-4 focus:outline-none focus:ring-2 focus:ring-sky-600"
-              id="username"
-              type="text"
+              id="email"
+              type="emai"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
             />
           </div>
           <div className="mb-3">
@@ -30,6 +66,8 @@ export default function LoginPage() {
               className="w-full rounded-md mt-2 h-8 bg-gray-600 px-4 focus:outline-none focus:ring-2 focus:ring-sky-600 text-2xl font-bold tracking-wider"
               id="password"
               type="password"
+              onChange={(e) => setPassword(e.target.value)}
+              required
             />
           </div>
           <div className="flex items-center relative">
@@ -40,6 +78,14 @@ export default function LoginPage() {
               id="remember"
             />
             <label htmlFor="remember">Ingat Saya</label>
+          </div>
+          <div className="my-4 w-full flex justify-center">
+            <button
+              className="px-8 py-2 bg-sky-500 rounded-md hover:opacity-75 transition-all duration-200"
+              onClick={handleLogin}
+            >
+              Login
+            </button>
           </div>
         </div>
         <div className="w-full py-3 bg-gray-700 mt-4">

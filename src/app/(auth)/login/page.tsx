@@ -8,31 +8,45 @@ import { useState } from "react";
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
 
   const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const body = { email: email, password: password };
-    const response = await fetch("http://localhost:8080/api/auth/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(body),
-    });
-
-    if (response.ok) {
-      const token = response.headers.get("Authorization")?.split(" ")[1]; // Mengambil token dari header
-      if (token) {
-        localStorage.setItem("token", token); // Menyimpan token di localStorage
-        router.push("/"); // Redirect ke halaman utama setelah login
+    try {
+      setLoading(true);
+      e.preventDefault();
+      const body = { email: email, password: password };
+      const response = await fetch("http://localhost:8080/api/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(body),
+        credentials: "include",
+      });
+      console.log(response);
+      if (response.ok) {
+        router.push("/");
+        // const token = response.headers.get("Authorization")?.split(" ")[1]; // Mengambil token dari header
+        // if (token) {
+        //   localStorage.setItem("token", token); // Menyimpan token di localStorage
+        //   router.push("/"); // Redirect ke halaman utama setelah login
+        // } else {
+        //   console.error("Token not found in response headers");
+        //   alert("Login failed. Token not found.");
+        // }
       } else {
-        console.error("Token not found in response headers");
-        alert("Login failed. Token not found.");
+        console.error("Login failed");
+        alert("Login failed. Please check your credentials.");
       }
-    } else {
-      console.error("Login failed");
-      alert("Login failed. Please check your credentials.");
+    } catch (error) {
+      if (error instanceof Error) {
+        alert(error.message);
+      } else {
+        alert("An unknown error occurred");
+      }
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -53,7 +67,7 @@ export default function LoginPage() {
             <input
               className="w-full rounded-md mt-2 h-8 bg-gray-600 px-4 focus:outline-none focus:ring-2 focus:ring-sky-600"
               id="email"
-              type="emai"
+              type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
@@ -84,7 +98,11 @@ export default function LoginPage() {
               className="px-8 py-2 bg-sky-500 rounded-md hover:opacity-75 transition-all duration-200"
               onClick={handleLogin}
             >
-              Login
+              {loading ? (
+                <span className="line-md--loading-loop"></span>
+              ) : (
+                "Login"
+              )}
             </button>
           </div>
         </div>

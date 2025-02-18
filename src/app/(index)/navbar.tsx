@@ -4,9 +4,15 @@ import { useEffect, useState } from "react";
 import MobileNav from "./mobileNav";
 import Toggle from "./toggle";
 import DesktopNav from "./desktopNav";
+import { useAuth } from "../context/authContext";
 
-const Navbar: React.FC = () => {
+interface NavbarProps {
+  user: string | null;
+}
+
+const Navbar: React.FC<NavbarProps> = ({ user }) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
+  const { setUser } = useAuth();
   const handleToggle = () => {
     setIsOpen(!isOpen);
   };
@@ -16,6 +22,10 @@ const Navbar: React.FC = () => {
       document.body.style.overflow = "hidden";
     } else {
       document.body.style.overflow = "auto";
+    }
+
+    if (user) {
+      setUser(user);
     }
 
     const handleResize = () => {
@@ -32,7 +42,7 @@ const Navbar: React.FC = () => {
       window.removeEventListener("resize", handleResize);
       document.body.style.overflow = "auto";
     };
-  }, [isOpen]);
+  }, [isOpen, user, setUser]);
 
   return (
     <>

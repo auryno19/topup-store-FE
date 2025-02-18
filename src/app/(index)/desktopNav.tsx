@@ -1,11 +1,13 @@
 import Link from "next/link";
 import Image from "next/image";
+import { useAuth } from "../context/authContext";
 
 interface DesktopNavProps {
   children?: React.ReactNode;
 }
 
 const DesktopNav: React.FC<DesktopNavProps> = ({ children }) => {
+  const auth = useAuth();
   return (
     <div className="w-full md:py-4 py-2 px-6 bg-[#393e46] flex items-center shadow-md justify-between ">
       <div className="relative w-1/4 h-12 md:h-10">
@@ -32,20 +34,33 @@ const DesktopNav: React.FC<DesktopNavProps> = ({ children }) => {
           <span className="fluent--slide-search-16-filled mr-1"></span>
           <p>Periksa Pesanan</p>
         </Link>
-        <Link
-          href="/login"
-          className="bg-sky-500 font-bold px-4 py-1.5 rounded-lg shadow-sm flex items-center hover:opacity-80 transition-all duration-200"
-        >
-          <span className="material-symbols--login mr-1"></span>
-          <p>Masuk</p>
-        </Link>
-        <Link
-          href="/register"
-          className="text-sky-500 font-bold bg-white px-4 py-1.5 rounded-lg shadow-sm flex items-center hover:opacity-80 transition-all duration-200"
-        >
-          <span className="mingcute--edit-fill mr-1"></span>
-          <p>Daftar</p>
-        </Link>
+
+        {auth.user ? (
+          <Link
+            href="#"
+            className="flex items-center hover:text-sky-500 transition-all duration-200"
+          >
+            <span className="gg--profile mr-1"></span>
+            <p>Welcome {auth ? auth.user : ""}</p>
+          </Link>
+        ) : (
+          <>
+            <Link
+              href="/login"
+              className="bg-sky-500 font-bold px-4 py-1.5 rounded-lg shadow-sm flex items-center hover:opacity-80 transition-all duration-200"
+            >
+              <span className="material-symbols--login mr-1"></span>
+              <p>Masuk</p>
+            </Link>
+            <Link
+              href="/register"
+              className="text-sky-500 font-bold bg-white px-4 py-1.5 rounded-lg shadow-sm flex items-center hover:opacity-80 transition-all duration-200"
+            >
+              <span className="mingcute--edit-fill mr-1"></span>
+              <p>Daftar</p>
+            </Link>
+          </>
+        )}
       </div>
 
       {children}

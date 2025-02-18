@@ -1,44 +1,33 @@
 "use client";
 
-import React, { createContext, useContext, useState, useEffect } from "react";
+import React, { createContext, useState, useContext, ReactNode } from "react";
 
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
-
+// Definisikan tipe untuk konteks autentikasi
 interface AuthContextType {
+  user: string | null;
+  setUser: (user: string | null) => void;
   token: string | null;
-  login: (token: string) => void;
-  logout: () => void;
+  setToken: (token: string | null) => void;
 }
 
-export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
+// Buat konteks dengan nilai default undefined
+const AuthContext = createContext<AuthContextType | undefined>(undefined);
+
+// Buat AuthProvider
+export const AuthProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
+  const [user, setUser] = useState<string | null>(null);
   const [token, setToken] = useState<string | null>(null);
-  useEffect(() => {
-    // Ambil token dari localStorage saat komponen dimuat
-    const storedToken = localStorage.getItem("token");
-    if (storedToken) {
-      setToken(storedToken);
-    }
-  }, []);
-
-  const login = (newToken: string) => {
-    setToken(newToken);
-    localStorage.setItem("token", newToken); // Simpan token di localStorage
-  };
-
-  const logout = () => {
-    setToken(null);
-    localStorage.removeItem("token"); // Hapus token dari localStorage
-  };
 
   return (
-    <AuthContext.Provider value={{ token, login, logout }}>
+    <AuthContext.Provider value={{ user, token, setUser, setToken }}>
       {children}
     </AuthContext.Provider>
   );
 };
 
+// Hook untuk menggunakan AuthContext
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (context === undefined) {

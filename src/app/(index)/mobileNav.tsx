@@ -1,11 +1,13 @@
 import Link from "next/link";
 import Image from "next/image";
+import { useAuth } from "../context/authContext";
 
 interface MobileNavProps {
   isOpen: boolean;
 }
 
 const MobileNav: React.FC<MobileNavProps> = ({ isOpen }) => {
+  const auth = useAuth();
   return (
     <div
       className={`absolute bg-[#393e46] h-screen z-50 w-72 top-0 shadow-md transition-transform duration-300 ease-in-out px-6 py-4 ${
@@ -40,24 +42,38 @@ const MobileNav: React.FC<MobileNavProps> = ({ isOpen }) => {
             <p>Periksa Pesanan</p>
           </Link>
         </li>
-        <li>
-          <Link
-            href="/login"
-            className="flex items-center hover:text-sky-500 transition-all duration-200"
-          >
-            <span className="material-symbols--login mr-1"></span>
-            <p>Masuk</p>
-          </Link>
-        </li>
-        <li>
-          <Link
-            href="/register"
-            className="flex items-center hover:text-sky-500 transition-all duration-200"
-          >
-            <span className="mingcute--edit-fill mr-1"></span>
-            <p>Daftar</p>
-          </Link>
-        </li>
+        {auth.user ? (
+          <li>
+            <Link
+              href="/login"
+              className="flex items-center hover:text-sky-500 transition-all duration-200"
+            >
+              <span className="gg--profile mr-1"></span>
+              <p>{auth.user ?? ""}</p>
+            </Link>
+          </li>
+        ) : (
+          <>
+            <li>
+              <Link
+                href="/login"
+                className="flex items-center hover:text-sky-500 transition-all duration-200"
+              >
+                <span className="material-symbols--login mr-1"></span>
+                <p>Masuk</p>
+              </Link>
+            </li>
+            <li>
+              <Link
+                href="/register"
+                className="flex items-center hover:text-sky-500 transition-all duration-200"
+              >
+                <span className="mingcute--edit-fill mr-1"></span>
+                <p>Daftar</p>
+              </Link>
+            </li>
+          </>
+        )}
       </ul>
     </div>
   );

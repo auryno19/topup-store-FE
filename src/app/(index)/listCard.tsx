@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import Card from "./card";
+import apiService from "@/service/apiService";
 
 interface Game {
   id: number;
@@ -17,13 +18,8 @@ const ListCard: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await fetch("http://localhost:8080/api/game");
-        if (!res.ok) {
-          const errorMessage = await res.text();
-          throw new Error(`Failed to fetch data: ${errorMessage}`);
-        }
-        const result = await res.json();
-        setData(result.data);
+        const response = await apiService.get<{ data: Game[] }>("/game");
+        setData(response.data.data);
       } catch (err) {
         if (err instanceof Error) {
           setError(err.message);

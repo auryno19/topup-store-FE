@@ -5,6 +5,9 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import AuthCard from "../authCard";
 import AuthFooterCard from "../authFooterCard";
+import FormField from "@/components/formField";
+import Button from "@/components/button";
+import apiService from "@/service/apiService";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -23,36 +26,30 @@ export default function LoginPage() {
   }
 
   const handleLogin = async (e: React.FormEvent) => {
+    setLoading(true);
+    e.preventDefault();
+    const body = { email: email, password: password };
     try {
-      setLoading(true);
-      e.preventDefault();
-      const body = { email: email, password: password };
-      const response = await fetch("http://localhost:8080/api/auth/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(body),
+      const response = await apiService.post("/auth/login", body, {
         credentials: "include",
       });
+      const statusCode = response.status;
       // console.log(response);
-      if (response.ok) {
+      if (statusCode === 200) {
         router.push("/");
-      } else {
-        const errors = await response.json();
-        if (response.status === 409) {
-          handleError(errors.error);
-        } else {
-          handleAlertError();
-          setAlertHeader(errors.message);
-          setAlertMessage(errors.error);
-        }
       }
-    } catch (error) {
-      if (error instanceof Error) {
-        alert(error.message);
+    } catch (err) {
+      const { status, message, error } = err as {
+        status: number;
+        message: string;
+        error?: string;
+      };
+      if (status === 409) {
+        handleError(error as loginErrors);
       } else {
-        alert("An unknown error occurred");
+        handleAlertError();
+        setAlertHeader(message);
+        setAlertMessage(error as string);
       }
     } finally {
       setLoading(false);
@@ -91,45 +88,25 @@ export default function LoginPage() {
             Masuk ke Akun anda
           </p>
           <form onSubmit={handleLogin}>
-            <div className="mb-3">
-              <label htmlFor="email" className="text-sm text-gray-300">
-                Email
-              </label>
-              <input
-                className={`w-full rounded-md mt-2 h-8 bg-gray-600 px-4 focus:outline-none focus:ring-2 focus:ring-sky-600 ${
-                  errorEmail ? "form-invalid" : ""
-                }`}
-                id="email"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                onFocus={handleFocusEmail}
-              />
-              {errorEmail && (
-                <p className="text-red-500 text-sm my-2 italic before:content-['*']">
-                  {errorEmail}
-                </p>
-              )}
-            </div>
-            <div className="mb-3">
-              <label htmlFor="password" className="text-sm text-gray-300">
-                Password
-              </label>
-              <input
-                className={`w-full rounded-md mt-2 h-8 bg-gray-600 px-4 focus:outline-none focus:ring-2 focus:ring-sky-600 text-2xl font-bold tracking-wider ${
-                  errorPassword ? "form-invalid" : ""
-                }`}
-                id="password"
-                type="password"
-                onChange={(e) => setPassword(e.target.value)}
-                onFocus={handleFocusPassword}
-              />
-              {errorPassword && (
-                <p className="text-red-500 text-sm my-2 italic before:content-['*']">
-                  {errorPassword}
-                </p>
-              )}
-            </div>
+            <FormField
+              id="email"
+              label="Email"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              onFocus={handleFocusEmail}
+              error={errorEmail}
+            />
+            <FormField
+              id="password"
+              label="Password"
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              onFocus={handleFocusPassword}
+              error={errorPassword}
+            />
+
             <div className="flex items-center relative">
               <input
                 className="mr-2"
@@ -139,18 +116,7 @@ export default function LoginPage() {
               />
               <label htmlFor="remember">Ingat Saya</label>
             </div>
-            <div className="my-4 w-full flex justify-center">
-              <button
-                className="px-8 py-2 bg-sky-500 rounded-md hover:opacity-75 transition-all duration-200"
-                onClick={handleLogin}
-              >
-                {loading ? (
-                  <span className="line-md--loading-loop"></span>
-                ) : (
-                  "Login"
-                )}
-              </button>
-            </div>
+            <Button loading={loading} onClick={handleLogin} value="Login" />
           </form>
         </div>
         <AuthFooterCard>

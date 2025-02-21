@@ -1,3 +1,5 @@
+import { useState } from "react";
+
 interface FormFieldProps {
   id: string;
   label: string;
@@ -17,8 +19,15 @@ const FormField: React.FC<FormFieldProps> = ({
   onFocus,
   error,
 }) => {
+  const [showPassword, setShowPassword] = useState(false);
+
+  const handleShowPassword = () => {
+    setShowPassword(!showPassword);
+  };
+
+  const errors = error?.replaceAll("[", " ").replaceAll("]", " ");
   return (
-    <div className="mb-3">
+    <div className="mb-3 relative">
       <label htmlFor={id} className="text-sm text-gray-300">
         {label}
       </label>
@@ -27,15 +36,29 @@ const FormField: React.FC<FormFieldProps> = ({
           error ? "form-invalid" : ""
         }`}
         id={id}
-        type={type}
+        type={showPassword ? "text" : type}
         value={value}
         onChange={onChange}
         onFocus={onFocus}
       />
-      {error && (
-        <p className="text-red-500 text-sm my-2 italic before:content-['*']">
-          {error}
-        </p>
+      {type === "password" && (
+        <div
+          className="absolute right-2 top-9 cursor-pointer text-slate-200"
+          onClick={handleShowPassword}
+        >
+          <span
+            className={showPassword ? "ri--eye-line" : "ri--eye-off-line"}
+          ></span>
+        </div>
+      )}
+      {errors && (
+        <ul className="text-red-500 text-sm my-2 italic ">
+          {errors.split(",").map((err, index) => (
+            <li className="before:content-['*']" key={index}>
+              {err}
+            </li>
+          ))}
+        </ul>
       )}
     </div>
   );

@@ -5,14 +5,14 @@ interface AlertProps {
   status: string;
   header: string;
   message: string;
-  handleError: () => void;
+  handleAlert: () => void;
 }
 
 const Alert: React.FC<AlertProps> = ({
   status,
   header,
   message,
-  handleError,
+  handleAlert,
 }) => {
   const [isActive, setIsActive] = useState(false);
   const [border, setBorder] = useState("");
@@ -39,7 +39,7 @@ const Alert: React.FC<AlertProps> = ({
   }, [status]);
   return (
     <div
-      className={`w-80 min-h-10 bg-slate-200 rounded-md px-6 py-4 shadow-md absolute -top-[220px] ${
+      className={`w-80 min-h-10 bg-slate-200 rounded-md px-6 py-4 shadow-md absolute z-50 -top-[220px] ${
         isActive && "translate-y-[150%]"
       } transition-transform duration-500 right-1/2 translate-x-1/2 text-center border-t-[6px] ${border}`}
     >
@@ -51,7 +51,7 @@ const Alert: React.FC<AlertProps> = ({
         onClick={() => {
           setIsActive(false);
           setTimeout(() => {
-            handleError();
+            handleAlert();
           }, 300);
         }}
       >

@@ -13,10 +13,14 @@ export default function RegisterPage() {
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [passwordConfirmation, setPasswordConfirmation] = useState("");
   const [loading, setLoading] = useState(false);
   const [errorEmail, setErrorEmail] = useState("");
   const [errorUsername, setErrorUsername] = useState("");
   const [errorPassword, setErrorPassword] = useState("");
+  const [errorPasswordConfirmation, setErrorPasswordConfirmation] =
+    useState("");
+  const [statusAlert, setStatusAlert] = useState("");
   const [isError, setIsError] = useState(false);
   const [alertHeader, setAlertHeader] = useState("");
   const [alertMessage, setAlertMessage] = useState("");
@@ -26,18 +30,24 @@ export default function RegisterPage() {
     email?: string;
     username?: string;
     password?: string;
+    passwordConfirmation?: string;
   }
 
   const handleRegister = async (e: React.FormEvent) => {
     setLoading(true);
     e.preventDefault();
-    const body = { email: email, username: username, password: password };
+    const body = {
+      email: email,
+      username: username,
+      password: password,
+      passwordConfirmation: passwordConfirmation,
+    };
     try {
       const response = await apiService.post("/auth/register", body);
       const statusCode = response.status;
       // console.log(response);
       if (statusCode === 200) {
-        router.push("/login");
+        router.push("/login?message=Register success, Please login");
       }
     } catch (err) {
       const { status, message, error } = err as {
@@ -49,6 +59,7 @@ export default function RegisterPage() {
         handleError(error as registerErrors);
       } else {
         handleAlertError();
+        setStatusAlert("error");
         setAlertHeader(message);
         setAlertMessage(error as string);
       }
@@ -70,6 +81,9 @@ export default function RegisterPage() {
     if (errors.password) {
       setErrorPassword(errors.password);
     }
+    if (errors.passwordConfirmation) {
+      setErrorPasswordConfirmation(errors.passwordConfirmation);
+    }
   };
   const handleFocusEmail = () => {
     setErrorEmail("");
@@ -81,12 +95,16 @@ export default function RegisterPage() {
   const handleFocusPassword = () => {
     setErrorPassword("");
   };
+  const handleFocusPasswordConfirmation = () => {
+    setErrorPasswordConfirmation("");
+  };
   return (
     <AuthCard
+      status={statusAlert}
       isError={isError}
       alertHeader={alertHeader}
       alertMessage={alertMessage}
-      handleError={handleAlertError}
+      handleAlert={handleAlertError}
     >
       <div className="px-6 py-2">
         <p className="text-xl font-semibold text-center my-4">Daftar Akun</p>
@@ -117,6 +135,15 @@ export default function RegisterPage() {
             onChange={(e) => setPassword(e.target.value)}
             onFocus={handleFocusPassword}
             error={errorPassword}
+          />
+          <FormField
+            id="passwordConfirmation"
+            label="Password Confirmation"
+            type="password"
+            value={passwordConfirmation}
+            onChange={(e) => setPasswordConfirmation(e.target.value)}
+            onFocus={handleFocusPasswordConfirmation}
+            error={errorPasswordConfirmation}
           />
           <Button loading={loading} onClick={handleRegister} value="Daftar" />
         </form>

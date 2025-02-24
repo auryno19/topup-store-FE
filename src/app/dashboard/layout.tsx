@@ -1,4 +1,5 @@
 import "../globals.css";
+import Navbar from "./components/navbar";
 import Sidebar from "./components/sidebar";
 
 export default async function RootLayout({
@@ -10,9 +11,11 @@ export default async function RootLayout({
     <>
       <div className="flex p-3 flex-row gap-2">
         <Sidebar />
-        <div className="flex flex-col w-full">
-          <div className="w-full h-14 bg-sky-50 opacity-90 rounded-lg shadow-lg"></div>
-          {children}
+        <div className="flex flex-col w-full gap-2">
+          <Navbar />
+          <div className="px-6 py-4 text-slate-600 bg-sky-50 opacity-90 h-full rounded-lg z-10">
+            {children}
+          </div>
         </div>
       </div>
     </>

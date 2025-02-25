@@ -9,7 +9,10 @@ interface Game {
   imagePath: string;
   imageTitlePath: string;
 }
-
+interface errorFetch {
+  message?: string;
+  error?: string;
+}
 const ListCard: React.FC = () => {
   const [data, setData] = useState<Game[] | null>(null);
   const [loading, setLoading] = useState(true);
@@ -21,10 +24,9 @@ const ListCard: React.FC = () => {
         const response = await apiService.get<{ data: Game[] }>("/game");
         setData(response.data.data);
       } catch (err) {
-        if (err instanceof Error) {
-          setError(err.message);
-        } else {
-          setError("An unknown error occurred");
+        // console.log(err);
+        if (err) {
+          setError((err as errorFetch).message || "An unknown error occurred");
         }
       } finally {
         setLoading(false);

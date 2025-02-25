@@ -1,6 +1,14 @@
+import { Metadata } from "next";
 import "../globals.css";
 import Navbar from "./components/navbar";
 import Sidebar from "./components/sidebar";
+
+export const metadata: Metadata = {
+  title: {
+    template: "Dashboard | %s",
+    default: "Dashboard",
+  },
+};
 
 export default async function RootLayout({
   children,

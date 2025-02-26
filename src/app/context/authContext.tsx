@@ -2,7 +2,6 @@
 
 import React, { createContext, useState, useContext, ReactNode } from "react";
 
-// Definisikan tipe untuk konteks autentikasi
 interface AuthContextType {
   user: string | null;
   setUser: (user: string | null) => void;
@@ -10,10 +9,8 @@ interface AuthContextType {
   setToken: (token: string | null) => void;
 }
 
-// Buat konteks dengan nilai default undefined
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-// Buat AuthProvider
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
@@ -27,7 +24,6 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
   );
 };
 
-// Hook untuk menggunakan AuthContext
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (context === undefined) {

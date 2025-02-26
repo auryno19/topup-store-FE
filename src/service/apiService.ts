@@ -18,6 +18,7 @@ const apiService = {
   ): Promise<ApiResponse<T>> => {
     const response = await fetch(`${BASE_URL}${endpoint}`, {
       method: "GET",
+      credentials: options?.credentials || "same-origin",
       ...options,
     });
     return handleResponse<T>(response);
@@ -51,6 +52,7 @@ const apiService = {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(body),
+      credentials: options?.credentials || "same-origin",
       ...options,
     });
     return handleResponse<T>(response);

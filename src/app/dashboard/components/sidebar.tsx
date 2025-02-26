@@ -32,7 +32,7 @@ const Sidebar = () => {
   }, []);
   return (
     <div
-      className={`relative z-30 bg-sky-50 h-[96vh] opacity-90 rounded-lg shadow-lg py-4 transition-all duration-300 ${
+      className={`relative bg-sky-50 h-[96vh] rounded-lg shadow-lg py-4 transition-all duration-300 ${
         isOpen ? "w-[16%] px-3" : "w-[40px] px-1"
       }`}
     >

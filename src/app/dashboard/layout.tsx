@@ -10,18 +10,14 @@ export const metadata: Metadata = {
   },
 };
 
-export default async function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <>
       <div className="flex p-3 flex-row gap-2">
         <Sidebar />
         <div className="flex flex-col w-full gap-2">
           <Navbar />
-          <div className="px-6 py-4 text-slate-600 bg-sky-50 opacity-90 h-full rounded-lg z-10">
+          <div className="px-6 py-4 w-full h-[85.5vh] text-slate-600 bg-sky-50 rounded-lg overflow-y-auto">
             {children}
           </div>
         </div>

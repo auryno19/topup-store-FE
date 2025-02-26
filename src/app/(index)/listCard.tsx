@@ -21,7 +21,9 @@ const ListCard: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await apiService.get<{ data: Game[] }>("/game");
+        const response = await apiService.get<{ data: Game[] }>("/game", {
+          credentials: "include",
+        });
         setData(response.data.data);
       } catch (err) {
         // console.log(err);

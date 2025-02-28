@@ -27,14 +27,16 @@ const apiService = {
   post: async <T, B>(
     endpoint: string,
     body: B,
-    options?: RequestOptions
+    options?: RequestOptions,
+    useJson?: boolean | true
   ): Promise<ApiResponse<T>> => {
+    const headers: HeadersInit = useJson
+      ? { "Content-Type": "application/json" }
+      : {};
     const response = await fetch(`${BASE_URL}${endpoint}`, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(body),
+      headers,
+      body: useJson ? JSON.stringify(body) : (body as unknown as BodyInit),
       credentials: options?.credentials || "same-origin",
       ...options,
     });
@@ -44,14 +46,16 @@ const apiService = {
   put: async <T, B>(
     endpoint: string,
     body: B,
-    options?: RequestOptions
+    options?: RequestOptions,
+    useJson?: boolean | true
   ): Promise<ApiResponse<T>> => {
+    const headers: HeadersInit = useJson
+      ? { "Content-Type": "application/json" }
+      : {};
     const response = await fetch(`${BASE_URL}${endpoint}`, {
       method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(body),
+      headers,
+      body: useJson ? JSON.stringify(body) : (body as unknown as BodyInit),
       credentials: options?.credentials || "same-origin",
       ...options,
     });

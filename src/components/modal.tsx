@@ -5,9 +5,16 @@ import { useEffect, useState } from "react";
 interface ModalProps {
   active: boolean;
   handleModal: () => void;
+  children?: React.ReactNode;
+  title: string;
 }
 
-const Modal: React.FC<ModalProps> = ({ active, handleModal }) => {
+const Modal: React.FC<ModalProps> = ({
+  active,
+  handleModal,
+  title,
+  children,
+}) => {
   const [isActive, setIsActive] = useState(false);
 
   const theme = useTheme();
@@ -27,16 +34,8 @@ const Modal: React.FC<ModalProps> = ({ active, handleModal }) => {
       >
         <span className="iconamoon--close-bold"></span>
       </div>
-      <div className="w-full rounded-t-lg py-3 px-6 shadow-md">
-        Modal Header
-      </div>
-      <div className="w-full h-[186px]  px-4 py-2 overflow-y-auto ">
-        <p>cek 123</p>
-        <p>cek 123</p>
-        <p>cek 123</p>
-        <p>cek 123</p>
-      </div>
-      <div className="py-3 px-6 border-t-2 border-slate-300">Footer</div>
+      <div className="w-full rounded-t-lg py-3 px-6 shadow-md">{title}</div>
+      {children}
     </div>
   );
 };

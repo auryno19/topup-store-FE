@@ -1,71 +1,110 @@
-import { useState } from "react";
+"use client";
+
+import { useEffect, useState } from "react";
 import Image from "next/image";
-import {
-  BsFillArrowRightCircleFill,
-  BsFillArrowLeftCircleFill,
-} from "react-icons/bs";
 
 interface CarouselProps {
   slides: string[];
 }
 const Carousel: React.FC<CarouselProps> = ({ slides }) => {
-  const [currentIndex, setCurrentIndex] = useState(0); // Indeks slide saat ini
+  const [translateX, setTranslateX] = useState(0);
+  const [orderedSlide, setOrderedSlides] = useState(slides);
+  const [isTransition, setIsTransitions] = useState(true);
 
+  const moveSlide = (fromIndex: number, toIndex: number) => {
+    const newSlides = [...orderedSlide];
+    const movedSlide = newSlides.splice(fromIndex, 1)[0];
+    newSlides.splice(toIndex, 0, movedSlide);
+    setOrderedSlides(newSlides);
+  };
   const nextSlide = () => {
-    setCurrentIndex((prevIndex) => (prevIndex + 1) % slides.length); // Pindah ke slide berikutnya
+    if (translateX < 100 * (slides.length - 1)) {
+      setIsTransitions(true);
+      setTranslateX(translateX + 100);
+      if (translateX + 100 == 100 * (slides.length - 1)) {
+        setTimeout(() => {
+          setIsTransitions(false);
+        }, 500);
+      }
+    } else {
+      moveSlide(0, slides.length - 1);
+      setTranslateX(translateX - 100);
+      setTimeout(() => {
+        setTranslateX(translateX);
+        setIsTransitions(true);
+        setTimeout(() => {
+          setIsTransitions(false);
+        }, 500);
+      }, 100);
+    }
   };
 
   const previousSlide = () => {
-    setCurrentIndex(
-      (prevIndex) => (prevIndex - 1 + slides.length) % slides.length
-    ); // Pindah ke slide sebelumnya
+    if (translateX > 0) {
+      setIsTransitions(true);
+      setTranslateX(translateX - 100);
+      if (translateX - 100 == 0) {
+        setTimeout(() => {
+          setIsTransitions(false);
+        }, 500);
+      }
+    } else {
+      moveSlide(slides.length - 1, 0);
+      setTranslateX(translateX + 100);
+      setTimeout(() => {
+        setTranslateX(translateX);
+        setIsTransitions(true);
+        setTimeout(() => {
+          setIsTransitions(false);
+        }, 500);
+      }, 100);
+    }
   };
+  useEffect(() => {
+    const interval = setInterval(() => {
+      nextSlide();
+    }, 5000);
 
-  // Mengatur urutan slide berdasarkan currentIndex
-  const orderedSlides = slides.map((_, index) => {
-    return slides[(currentIndex + index) % slides.length];
-  });
-
+    return () => clearInterval(interval);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [translateX]);
   return (
-    <div className="overflow-hidden relative">
+    <div className="overflow-hidden relative shadow-lg">
       <div
-        className={`flex transition-transform duration-500`}
+        className={`flex ${
+          isTransition ? "transition-transform duration-500" : ""
+        }`}
         style={{
-          transform: `translateX(-${(currentIndex % slides.length) * 100}%)`,
+          transform: `translateX(-${translateX}%)`,
         }}
       >
-        {orderedSlides.map((s, index) => (
+        {orderedSlide.map((s, index) => (
           <Image
             src={s}
             alt={`Slide ${index}`}
+            width={900}
+            height={900}
+            className="rounded-lg"
             key={index}
-            layout="fill"
-            objectFit="cover"
           />
         ))}
       </div>
 
-      <div className="absolute top-0 h-full w-full justify-between items-center flex text-white px-10 text-3xl">
-        <button onClick={previousSlide} title="Previous Slide">
-          <BsFillArrowLeftCircleFill />
+      <div className="absolute top-0 h-full w-full justify-between items-center flex text-white px-2 text-3xl">
+        <button
+          onClick={previousSlide}
+          className="w-8 h-8 rounded-full bg-gray-600 opacity-70 ring-2 ring-white active:border-none flex items-center"
+          title="Previous Slide"
+        >
+          <span className="eva--chevron-left-fill "></span>
         </button>
-        <button onClick={nextSlide} title="Next Slide">
-          <BsFillArrowRightCircleFill />
+        <button
+          onClick={nextSlide}
+          className="w-8 h-8 rounded-full bg-gray-600 opacity-70 ring-2 ring-white active:border-none flex items-center"
+          title="Next Slide"
+        >
+          <span className="eva--chevron-right-fill "></span>
         </button>
-      </div>
-
-      <div className="absolute bottom-0 py-4 flex justify-center gap-3 w-full">
-        {slides.map((s, i) => (
-          <div
-            onClick={() => {
-              setCurrentIndex(i);
-            }}
-            key={"circle" + i}
-            className={`rounded-full w-5 h-5 cursor-pointer ${
-              i === currentIndex ? "bg-white" : "bg-gray-500"
-            }`}
-          ></div>
-        ))}
       </div>
     </div>
   );

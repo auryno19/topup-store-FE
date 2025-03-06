@@ -61,15 +61,17 @@ const Carousel: React.FC<CarouselProps> = ({ slides }) => {
     }
   };
   useEffect(() => {
-    const interval = setInterval(() => {
-      nextSlide();
-    }, 5000);
+    if (slides.length > 1) {
+      const interval = setInterval(() => {
+        nextSlide();
+      }, 5000);
 
-    return () => clearInterval(interval);
+      return () => clearInterval(interval);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [translateX]);
   return (
-    <div className="overflow-hidden relative shadow-lg">
+    <div className="overflow-hidden relative shadow-lg rounded-lg">
       <div
         className={`flex ${
           isTransition ? "transition-transform duration-500" : ""
@@ -79,28 +81,33 @@ const Carousel: React.FC<CarouselProps> = ({ slides }) => {
         }}
       >
         {orderedSlide.map((s, index) => (
-          <Image
-            src={s}
-            alt={`Slide ${index}`}
-            width={900}
-            height={900}
-            className="rounded-lg"
-            key={index}
-          />
+          <div key={index} className="flex-shrink-0 w-full">
+            <Image
+              src={s ? "data:image/*;base64," + s : "/banner.jpeg"}
+              alt={`Slide ${index}`}
+              width={800}
+              height={100}
+              className="rounded-lg object-contain"
+            />
+          </div>
         ))}
       </div>
 
-      <div className="absolute top-0 h-full w-full justify-between items-center flex text-white px-2 text-3xl">
+      <div
+        className={`top-0 h-full w-full justify-between items-center flex text-white px-2 text-3xl ${
+          slides.length > 1 ? "absolute" : "hidden"
+        }`}
+      >
         <button
           onClick={previousSlide}
-          className="w-8 h-8 rounded-full bg-gray-600 opacity-70 ring-2 ring-white active:border-none flex items-center"
+          className="md:w-8 md:h-8 w-4 h-4 rounded-full bg-gray-600 opacity-30 hover:opacity-70 transition-opacity duration-200 ring-2 ring-white active:border-none active:ring-0 flex items-center"
           title="Previous Slide"
         >
           <span className="eva--chevron-left-fill "></span>
         </button>
         <button
           onClick={nextSlide}
-          className="w-8 h-8 rounded-full bg-gray-600 opacity-70 ring-2 ring-white active:border-none flex items-center"
+          className="md:w-8 md:h-8 w-4 h-4 rounded-full bg-gray-600 opacity-30 hover:opacity-70 transition-opacity duration-200 ring-2 ring-white active:border-none active:ring-0 flex items-center"
           title="Next Slide"
         >
           <span className="eva--chevron-right-fill "></span>

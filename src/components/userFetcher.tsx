@@ -4,24 +4,21 @@ import { cookies } from "next/headers";
 
 const UserFetcher = (): Promise<JWTPayload | null> => {
   return cookies().then((cookieStore) => {
-    // Tunggu Promise dari cookies()
-    const tokenFromCookies = cookieStore.get("token")?.value; // Ambil token dari cookies
-
-    // console.log("Token from cookies:", tokenFromCookies);
+    const tokenFromCookies = cookieStore.get("token")?.value;
 
     if (tokenFromCookies) {
-      return verifyToken(tokenFromCookies) // Panggil verifyToken
+      return verifyToken(tokenFromCookies)
         .then((userData) => {
-          //   console.log("User  data:", userData.sub);
-          return userData.sub ? { sub: userData.sub } : null; // Kembalikan data pengguna
+          return userData.sub ? { sub: userData.sub } : null;
         })
         .catch((error) => {
+          cookieStore.delete("token");
           console.error("Failed to verify token:", error);
-          return null; // Kembalikan null jika terjadi kesalahan
+          return null;
         });
     }
 
-    return Promise.resolve(null); // Kembalikan Promise yang terresolve dengan null jika tidak ada token
+    return Promise.resolve(null);
   });
 };
 

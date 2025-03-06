@@ -28,7 +28,7 @@ const apiService = {
     endpoint: string,
     body: B,
     options?: RequestOptions,
-    useJson?: boolean | true
+    useJson: boolean = true
   ): Promise<ApiResponse<T>> => {
     const headers: HeadersInit = useJson
       ? { "Content-Type": "application/json" }
@@ -47,7 +47,7 @@ const apiService = {
     endpoint: string,
     body: B,
     options?: RequestOptions,
-    useJson?: boolean | true
+    useJson: boolean = true
   ): Promise<ApiResponse<T>> => {
     const headers: HeadersInit = useJson
       ? { "Content-Type": "application/json" }

@@ -7,17 +7,19 @@ import ModalFooter from "@/components/modalFooter";
 import apiService from "@/service/apiService";
 import Image from "next/image";
 import { useCallback, useEffect, useState } from "react";
+import ListBanner from "./listBanner";
 
 const HandleEditBanner: React.FC = () => {
-  interface Banner {
-    banner: string;
+  interface listBanner {
+    id: number;
+    image: string;
   }
   interface errorFetch {
     message?: string;
     error?: string;
   }
   const [modalIsActive, setModalIsActive] = useState(false);
-  const [data, setData] = useState<Banner | null>(null);
+  const [data, setData] = useState<listBanner[] | null>([]);
   const [banner, setBanner] = useState("No File");
   const [dataBanner, setDataBanner] = useState<File | null>(null);
   const [isPreviewImage, setIsPreviewImage] = useState(false);
@@ -55,10 +57,14 @@ const HandleEditBanner: React.FC = () => {
   };
   const fetchData = async () => {
     try {
-      const response = await apiService.get<{ data: Banner }>("/banner", {
-        credentials: "include",
-      });
+      const response = await apiService.get<{ data: listBanner[] }>(
+        "/banner/getAll",
+        {
+          credentials: "include",
+        }
+      );
       setData(response.data.data);
+      console.log(response.data.data);
     } catch (err) {
       if (err) {
         setError((err as errorFetch).message || "An unknown error occurred");
@@ -100,9 +106,9 @@ const HandleEditBanner: React.FC = () => {
         handleError(errors);
       } else {
         try {
-          console.log(form);
-          const response = await apiService.put(
-            "/banner/edit",
+          // console.log(form);
+          const response = await apiService.post(
+            "/banner/add",
             form,
             {
               credentials: "include",
@@ -230,7 +236,9 @@ const HandleEditBanner: React.FC = () => {
           <Button loading={false} onClick={saveBanner} value="Save" />
         </ModalFooter>
       </Modal>
-      <Button loading={false} onClick={handleModal} value="trigger" />
+      <div className="w-full pl-10">
+        <Button loading={false} onClick={handleModal} value="Add Banner" />
+      </div>
       {loading ? (
         <div className="flex justify-center self-center relative w-[70%] h-0 pb-[35%] rounded-lg overflow-hidden shadow-sm ">
           <span className="eos-icons--three-dots-loading"></span>
@@ -240,13 +248,22 @@ const HandleEditBanner: React.FC = () => {
           <p className="text-center">Error : {error}</p>
         </div>
       ) : (
-        <div className="self-center relative w-[70%] h-0 pb-[35%] rounded-lg overflow-hidden shadow-sm ">
-          <Image
-            src={data ? "data:image/*;base64," + data.banner : "/banner.jpeg"}
-            layout="fill"
-            objectFit="cover"
-            alt="Fufa Store Logo"
-          />
+        <div className="w-full px-20">
+          <table className="w-full text-center">
+            <thead>
+              <tr className="border-b-2 border-slate-300">
+                <th className="px-4 py-2 w-1/6">No</th>
+                <th className="px-4 py-2 w-3/6">Banner</th>
+                <th className="px-4 py-2 w-2/6">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {data &&
+                data.map((banner, index) => (
+                  <ListBanner data={banner} key={banner.id} no={index + 1} />
+                ))}
+            </tbody>
+          </table>
         </div>
       )}
     </>

@@ -9,9 +9,16 @@ interface Banner {
 interface ListBannerProp {
   data: Banner;
   no: number;
+  handleEdit: (id: number) => void;
+  handleDelete: (id: number) => void;
 }
 
-const ListBanner: React.FC<ListBannerProp> = ({ data, no }) => {
+const ListBanner: React.FC<ListBannerProp> = ({
+  data,
+  no,
+  handleEdit,
+  handleDelete,
+}) => {
   return (
     <tr className="border-b border-slate-300">
       <td className="px-4 py-2">{no}</td>
@@ -29,18 +36,14 @@ const ListBanner: React.FC<ListBannerProp> = ({ data, no }) => {
         <div className="w-full flex gap-2 justify-center">
           <Button
             loading={false}
-            onClick={function (e: React.FormEvent): void {
-              throw new Error("Function not implemented.");
-            }}
+            onClick={() => handleEdit(data.id)}
             type="warning"
             size="sm"
             value={"Edit"}
           />
           <Button
             loading={false}
-            onClick={function (e: React.FormEvent): void {
-              throw new Error("Function not implemented.");
-            }}
+            onClick={() => handleDelete(data.id)}
             type="danger"
             size="sm"
             value={"Delete"}

@@ -81,13 +81,16 @@ const Carousel: React.FC<CarouselProps> = ({ slides }) => {
         }}
       >
         {orderedSlide.map((s, index) => (
-          <div key={index} className="flex-shrink-0 w-full">
+          <div
+            key={index}
+            className="flex-shrink-0 w-full h-[30vw] flex items-center justify-center"
+          >
             <Image
               src={s ? "data:image/*;base64," + s : "/banner.jpeg"}
               alt={`Slide ${index}`}
               width={800}
               height={100}
-              className="rounded-lg object-contain"
+              className="rounded-lg object-cover "
             />
           </div>
         ))}

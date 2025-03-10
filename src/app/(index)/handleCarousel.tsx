@@ -35,7 +35,7 @@ const HandleCarousel: React.FC = () => {
 
   return (
     <div
-      className={`w-[60%] m-auto ${
+      className={`w-[80%] md:w-[60%] m-auto ${
         loading || error ? "flex items-center justify-center" : ""
       }`}
     >

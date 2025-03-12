@@ -117,6 +117,7 @@ export default function RegisterPage() {
             onChange={(e) => setEmail(e.target.value)}
             onFocus={handleFocusEmail}
             error={errorEmail}
+            mode="dark"
           />
           <FormField
             id="username"
@@ -126,6 +127,7 @@ export default function RegisterPage() {
             onChange={(e) => setUsername(e.target.value)}
             onFocus={handleFocusUsername}
             error={errorUsername}
+            mode="dark"
           />
           <FormField
             id="password"
@@ -135,6 +137,7 @@ export default function RegisterPage() {
             onChange={(e) => setPassword(e.target.value)}
             onFocus={handleFocusPassword}
             error={errorPassword}
+            mode="dark"
           />
           <FormField
             id="passwordConfirmation"
@@ -144,6 +147,7 @@ export default function RegisterPage() {
             onChange={(e) => setPasswordConfirmation(e.target.value)}
             onFocus={handleFocusPasswordConfirmation}
             error={errorPasswordConfirmation}
+            mode="dark"
           />
           <Button loading={loading} onClick={handleRegister} value="Daftar" />
         </form>

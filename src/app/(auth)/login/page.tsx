@@ -120,6 +120,7 @@ export default function LoginPage() {
               onChange={(e) => setEmail(e.target.value)}
               onFocus={handleFocusEmail}
               error={errorEmail}
+              mode="dark"
             />
             <FormField
               id="password"
@@ -129,6 +130,7 @@ export default function LoginPage() {
               onChange={(e) => setPassword(e.target.value)}
               onFocus={handleFocusPassword}
               error={errorPassword}
+              mode="dark"
             />
 
             <div className="flex items-center relative">

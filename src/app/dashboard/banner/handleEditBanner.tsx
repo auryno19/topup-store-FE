@@ -5,9 +5,9 @@ import Modal from "@/components/modal";
 import ModalBody from "@/components/modalBody";
 import ModalFooter from "@/components/modalFooter";
 import apiService from "@/service/apiService";
-import Image from "next/image";
 import { useCallback, useEffect, useState } from "react";
 import ListBanner from "./listBanner";
+import FormFile from "@/components/formFile";
 
 const HandleEditBanner: React.FC = () => {
   interface listBanner {
@@ -22,7 +22,7 @@ const HandleEditBanner: React.FC = () => {
   const [data, setData] = useState<listBanner[] | null>([]);
   const [banner, setBanner] = useState("No File");
   const [dataBanner, setDataBanner] = useState<File | null>(null);
-  const [isPreviewImage, setIsPreviewImage] = useState(false);
+  // const [isPreviewImage, setIsPreviewImage] = useState(false);
   const [previewImage, setPreviewImage] = useState("");
   const [error, setError] = useState("");
   const [errorBanner, setErrorBanner] = useState("");
@@ -40,7 +40,7 @@ const HandleEditBanner: React.FC = () => {
       image.onload = () => {
         file.onload = (e) => {
           if (typeof e.target?.result === "string") {
-            setIsPreviewImage(true);
+            // setIsPreviewImage(true);
             setPreviewImage(e.target.result);
           }
         };
@@ -60,7 +60,7 @@ const HandleEditBanner: React.FC = () => {
         setPreviewImage("data:image/*;base64," + response.data.data.image);
         setModalType("edit");
         setModalId(id);
-        setIsPreviewImage(true);
+        // setIsPreviewImage(true);
         setModalIsActive(true);
       }
     } catch (err) {
@@ -75,7 +75,8 @@ const HandleEditBanner: React.FC = () => {
   const clearPreview = () => {
     (document.getElementById("banner") as HTMLInputElement).value = "";
     setDataBanner(null);
-    setIsPreviewImage(false);
+    // setIsPreviewImage(false);
+    setPreviewImage("");
     setBanner("No File");
   };
   const fetchData = async () => {
@@ -130,7 +131,6 @@ const HandleEditBanner: React.FC = () => {
 
       const statusCode = response.status;
       if (statusCode === 200) {
-        fetchData();
         handleModal();
         clearPreview();
       }
@@ -139,6 +139,7 @@ const HandleEditBanner: React.FC = () => {
       handleModal();
     } finally {
       handleModal();
+      fetchData();
     }
   };
 
@@ -230,6 +231,14 @@ const HandleEditBanner: React.FC = () => {
     }
   };
 
+  const handleChangeForm = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setErrorBanner("");
+    if (e.target.files && e.target.files.length > 0) {
+      setBanner(e.target.files[0].name);
+      setDataBanner(e.target.files[0]);
+    }
+  };
+
   const handleModal = () => {
     setModalTitle("Add Banner");
     setModalType("post");
@@ -247,65 +256,16 @@ const HandleEditBanner: React.FC = () => {
         <ModalBody>
           <div className="w-full px-3">
             <form onSubmit={saveBanner}>
-              <label htmlFor="banner" className="text-sm text-slate-600">
-                Banner
-              </label>
-              <div
-                className={`flex flex-row items-center w-full bg-slate-300 rounded-md ${
-                  errorBanner && "ring-red-500 ring-2"
-                }`}
-              >
-                <input
-                  type="file"
-                  id="banner"
-                  onChange={(e) => {
-                    if (e.target.files) {
-                      setErrorBanner("");
-                      setBanner(e.target.files[0].name);
-                      setDataBanner(e.target.files[0]);
-                      setTimeout(() => {
-                        handlePreviewImage();
-                      }, 200);
-                    }
-                  }}
-                  hidden
-                />
-                <label
-                  htmlFor="banner"
-                  className="block py-2 px-4 rounded-[3.5px] w-[6.5rem] border-0 text-sm =font-semibold bg-slate-400
-            text-slate-700 hover:bg-slate-500 hover:text-slate-200 cursor-pointer"
-                >
-                  Choose file
-                </label>
-                <label className="text-sm py-2 px-4 text-slate-500 max-w-72">
-                  <p className="line-clamp-1">{banner}</p>
-                </label>
-              </div>
-              {errorBanner && (
-                <div className="before:content-['*'] text-sm italic text-red-600 mt-1 ml-2">
-                  {errorBanner}
-                </div>
-              )}
-              <div
-                className={`relative w-36 h-24 mt-3  ${
-                  !isPreviewImage && "hidden"
-                }`}
-              >
-                {isPreviewImage && (
-                  <Image
-                    src={previewImage}
-                    alt="banner preview"
-                    layout="fill"
-                    objectFit="cover"
-                  />
-                )}
-                <div
-                  className="absolute flex items-center justify-center text-slate-200 w-5 h-5 bg-red-500 rounded-full cursor-pointer -right-2 -top-2"
-                  onClick={clearPreview}
-                >
-                  <span className="iconamoon--close-bold"></span>
-                </div>
-              </div>
+              <FormFile
+                id={"banner"}
+                label={"Banner"}
+                error={errorBanner}
+                value={banner}
+                handlePreview={handlePreviewImage}
+                clearPreview={clearPreview}
+                previewImage={previewImage}
+                onChange={(e) => handleChangeForm(e)}
+              />
             </form>
           </div>
         </ModalBody>
@@ -315,12 +275,17 @@ const HandleEditBanner: React.FC = () => {
             onClick={
               modalType == "post" ? saveBanner : () => editBanner(modalId)
             }
-            value={modalType == "post" ? "Save" : "Edit"}
+            value={modalType == "post" ? "Save" : "Save Changes"}
           />
         </ModalFooter>
       </Modal>
       <div className="w-full pl-10">
-        <Button loading={false} onClick={handleModal} value="Add Banner" />
+        <Button
+          loading={false}
+          onClick={handleModal}
+          value={"Add Banner"}
+          iconEnd={<span className="codex--plus ml-1"></span>}
+        />
       </div>
       {loading ? (
         <div className="flex justify-center self-center relative w-[70%] h-0 pb-[35%] rounded-lg overflow-hidden shadow-sm ">

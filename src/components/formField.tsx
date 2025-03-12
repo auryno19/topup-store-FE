@@ -8,6 +8,7 @@ interface FormFieldProps {
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onFocus: () => void;
   error?: string;
+  mode?: "dark" | "light";
 }
 
 const FormField: React.FC<FormFieldProps> = ({
@@ -18,6 +19,7 @@ const FormField: React.FC<FormFieldProps> = ({
   onChange,
   onFocus,
   error,
+  mode = "light",
 }) => {
   const [showPassword, setShowPassword] = useState(false);
 
@@ -28,11 +30,18 @@ const FormField: React.FC<FormFieldProps> = ({
   const errors = error?.replaceAll("[", " ").replaceAll("]", " ");
   return (
     <div className="mb-3 relative">
-      <label htmlFor={id} className="text-sm text-gray-300">
+      <label
+        htmlFor={id}
+        className={`text-sm ${
+          mode == "dark" ? "text-gray-300" : "text-slate-600"
+        }`}
+      >
         {label}
       </label>
       <input
-        className={`w-full rounded-md mt-2 h-8 bg-gray-600 px-4 focus:outline-none focus:ring-2 focus:ring-sky-600 ${
+        className={`w-full rounded-md mt-2 h-8 ${
+          mode == "dark" ? "bg-gray-600" : "bg-slate-300"
+        } px-4 focus:outline-none focus:ring-2 focus:ring-sky-600 ${
           error ? "form-invalid" : ""
         }`}
         id={id}
@@ -43,7 +52,9 @@ const FormField: React.FC<FormFieldProps> = ({
       />
       {type === "password" && (
         <div
-          className="absolute right-2 top-9 cursor-pointer text-slate-200"
+          className={`absolute right-2 top-9 cursor-pointer ${
+            mode == "dark" ? "text-slate-200" : "text-slate-600"
+          } `}
           onClick={handleShowPassword}
         >
           <span

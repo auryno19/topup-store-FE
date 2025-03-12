@@ -2,6 +2,8 @@ interface ButtonProps {
   loading: boolean;
   onClick: (e: React.FormEvent) => void;
   value: string;
+  iconStart?: React.ReactNode;
+  iconEnd?: React.ReactNode;
   // margin?: string | "";
   type?: "primary" | "danger" | "warning";
   size?: "md" | "sm" | "xl";
@@ -13,6 +15,8 @@ const Button: React.FC<ButtonProps> = ({
   value,
   type,
   size,
+  iconStart = null,
+  iconEnd = null,
   // margin = "",
 }) => {
   let bgButton = "";
@@ -40,10 +44,16 @@ const Button: React.FC<ButtonProps> = ({
   return (
     // <div className={`${margin} w-full flex justify-center`}>
     <button
-      className={`${szButton} ${bgButton} shadow-md rounded-md hover:opacity-75 transition-all duration-200`}
+      className={`${szButton} ${bgButton} shadow-md text-white rounded-md hover:opacity-75 transition-all duration-200 flex items-center`}
       onClick={onClick}
     >
-      {loading ? <span className="line-md--loading-loop"></span> : value}
+      {iconStart}
+      {loading ? (
+        <span className="line-md--loading-loop"></span>
+      ) : (
+        <p>{value}</p>
+      )}
+      {iconEnd}
     </button>
     // </div>
   );

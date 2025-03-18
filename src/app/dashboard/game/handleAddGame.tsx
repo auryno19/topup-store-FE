@@ -4,12 +4,14 @@ import FormField from "@/components/formField";
 import Modal from "@/components/modal";
 import ModalBody from "@/components/modalBody";
 import ModalFooter from "@/components/modalFooter";
+import RichTextEditor from "@/components/richTextEditor";
 import { useState } from "react";
 
 const HandleAddGame = () => {
   const [modalIsActive, setModalIsActive] = useState(false);
   const [name, setName] = useState("");
   const [publisher, setPublisher] = useState("");
+  const [description, setDescription] = useState("");
   const [errorName, setErrorName] = useState("");
   const [errorPublisher, setErrorPublisher] = useState("");
 
@@ -47,6 +49,12 @@ const HandleAddGame = () => {
                 onChange={(e) => setPublisher(e.target.value)}
                 onFocus={() => setErrorPublisher("")}
                 error={errorPublisher}
+              />
+            </div>
+            <div className="px-4 mt-2 mb-3">
+              <RichTextEditor
+                label={"Deskripsi"}
+                onChange={(value) => setDescription(value)}
               />
             </div>
           </form>

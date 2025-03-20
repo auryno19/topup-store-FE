@@ -21,11 +21,20 @@ const Modal: React.FC<ModalProps> = ({
   useEffect(() => {
     setIsActive(active);
     theme?.setBackdrop(isActive);
+    if (theme?.backdropClicked) {
+      setTimeout(() => {
+        theme?.setBackdropClicked(false);
+      }, 100);
+    }
   }, [isActive, theme, active]);
   return (
     <div
       className={`absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 min-w-[30rem] min-h-60 bg-slate-200 rounded-lg shadow-slate-700 shadow-lg z-50 flex flex-col text-slate-600 duration-300 transition-transform ${
-        isActive ? "scale-100" : "scale-0"
+        isActive
+          ? theme?.backdropClicked
+            ? "scale-95"
+            : "scale-100"
+          : "scale-0"
       }`}
     >
       <div

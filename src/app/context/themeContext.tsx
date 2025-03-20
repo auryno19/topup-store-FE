@@ -4,8 +4,9 @@ import { createContext, ReactNode, useContext, useState } from "react";
 
 interface ThemeContextType {
   backdrop: boolean | false;
+  backdropClicked: boolean | false;
   setBackdrop: React.Dispatch<React.SetStateAction<boolean>>;
-  //   theme: string | "";
+  setBackdropClicked: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
@@ -14,9 +15,12 @@ export const ThemeProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
   const [backdrop, setBackdrop] = useState(false);
-  //   const [theme, setTheme] = useState("");
+  const [backdropClicked, setBackdropClicked] = useState(false);
+
   return (
-    <ThemeContext.Provider value={{ backdrop, setBackdrop }}>
+    <ThemeContext.Provider
+      value={{ backdrop, setBackdrop, backdropClicked, setBackdropClicked }}
+    >
       {children}
     </ThemeContext.Provider>
   );

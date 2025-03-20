@@ -23,7 +23,7 @@ const FormFile: React.FC<FormFileProps> = ({
 }) => {
   return (
     <>
-      <label htmlFor="banner" className="text-sm text-slate-600 ">
+      <label htmlFor={id} className="text-sm text-slate-600 ">
         {label}
       </label>
       <div
@@ -45,7 +45,7 @@ const FormFile: React.FC<FormFileProps> = ({
           hidden
         />
         <label
-          htmlFor="banner"
+          htmlFor={id}
           className="block py-2 px-4 rounded-[3.5px] w-[6.5rem] border-0 text-sm =font-semibold bg-slate-400
               text-slate-700 hover:bg-slate-500 hover:text-slate-200 cursor-pointer"
         >

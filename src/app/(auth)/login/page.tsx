@@ -71,7 +71,7 @@ export default function LoginPage() {
       const { message, ...params } = Object.fromEntries(searchParams.entries());
       const newUrl =
         window.location.pathname + "?" + new URLSearchParams(params).toString();
-      router.replace(newUrl); // Menghapus query parameter dari URL
+      router.replace(newUrl);
     };
     if (message) {
       setStatusAlert("success");

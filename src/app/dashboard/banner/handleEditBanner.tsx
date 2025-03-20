@@ -37,13 +37,11 @@ const HandleEditBanner: React.FC = () => {
       file.readAsDataURL(dataBanner);
       const image = new window.Image();
       image.src = URL.createObjectURL(dataBanner);
-      image.onload = () => {
-        file.onload = (e) => {
-          if (typeof e.target?.result === "string") {
-            // setIsPreviewImage(true);
-            setPreviewImage(e.target.result);
-          }
-        };
+      file.onload = (e) => {
+        if (typeof e.target?.result === "string") {
+          // setIsPreviewImage(true);
+          setPreviewImage(e.target.result);
+        }
       };
     }
   }, [dataBanner]);
